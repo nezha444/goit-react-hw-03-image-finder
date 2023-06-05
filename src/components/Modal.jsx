@@ -1,11 +1,31 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 export default class Modal extends Component {
+  static propTypes = {
+    largeImageURL: PropTypes.string.isRequired,
+    modalClose: PropTypes.func.isRequired,
+  };
   handleOverlayClick = event => {
     if (event.target === event.currentTarget) {
       this.props.modalClose('');
     }
   };
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyDown);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown);
+  }
+
+  handleKeyDown = event => {
+    if (event.key === 'Escape') {
+      this.props.modalClose('');
+    }
+  };
+
   render() {
     return (
       <div

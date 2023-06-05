@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import Searchbar from './Searchbar';
+import PropTypes from 'prop-types';
 import '../styles.css';
-import * as ApiImages from './ApiImages';
+import * as apiImages from './apiImages';
 import { ImageGallery } from './ImageGallery';
-import { ImageGalleryItem } from './ImageGalleryItem';
+// import { ImageGalleryItem } from './ImageGalleryItem';
 import { Button } from './Button';
-// import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
 import Modal from './Modal';
+import { Loader } from './Loader';
 
 export class App extends Component {
   state = {
@@ -24,8 +24,11 @@ export class App extends Component {
       prevState.query !== this.state.query ||
       prevState.page !== this.state.page
     ) {
-      this.setState({ isLoading: true });
-      ApiImages.getImg(this.state.query, this.state.page)
+      this.setState({
+        isLoading: true,
+      });
+      apiImages
+        .getImg(this.state.query, this.state.page)
         .then(data => {
           // data.data.hits --- Массив объектов с фото
           if (!data.data.hits.length) {
@@ -40,7 +43,11 @@ export class App extends Component {
         })
         .catch(error => console.log(error))
         .finally(() => {
-          this.setState({ isLoading: false });
+          // setTimeout(() => {
+          this.setState({
+            isLoading: false,
+          });
+          // }, 100);
         });
     }
   }
@@ -62,13 +69,10 @@ export class App extends Component {
     return (
       <div className="App">
         <Searchbar submitForm={this.submitForm}></Searchbar>
-        {/* {this.state.isLoading && <Skeleton/> && } */}
-        <ImageGallery>
-          <ImageGalleryItem
-            photos={this.state.photos}
-            showModal={this.showModal}
-          ></ImageGalleryItem>
-        </ImageGallery>
+
+        {this.state.isLoading && <Loader />}
+
+        <ImageGallery showModal={this.showModal} photos={this.state.photos} />
 
         {this.state.hiddenBtn && <Button onClick={this.handleClick} />}
 
